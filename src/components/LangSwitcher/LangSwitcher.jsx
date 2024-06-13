@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './LangSwitcher.module.css';
-import { changeLang } from '../../redux/localeSlise';
+import { changeLang } from '../../redux/localeSlice';
 
 function LangSwitcher() {
   const lang = useSelector(state => state.locale.lang);
@@ -11,7 +11,7 @@ function LangSwitcher() {
       <label className={styles.label}>Select language:</label>
       <select
         value={lang}
-        onChange={(e) => dispatch(changeLang(e.target.value))}
+        onChange={e => dispatch(changeLang(e.target.value))}
         className={styles.select}
       >
         <option value="en">English</option>
