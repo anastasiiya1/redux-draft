@@ -1,12 +1,45 @@
-import { composeWithDevTools } from '@redux-devtools/extension';
-import { balanceReducer } from './balanceSlice';
-import { localeReducer } from './localeSlise';
-import { combineReducers, createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer,FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER, } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import balanceReducer from './balanceSlice';
+import localeReducer from './localeSlice';
+
+const balancePerConfig = {
+  key: 'balance',
+  storage,
+  whitelist: ['value'],
+};
+
+const persistedBalanceReducer = persistReducer(
+  balancePerConfig,
+  balanceReducer,
+);
+
+const localePersConfig = {
+  key: 'locale',
+  storage,
+  whitelist: ['lang'],
+};
+
+const persistedLocaleReducer = persistReducer(localePersConfig, localeReducer);
 
 
-const rootReducer = combineReducers({
-  balance: balanceReducer,
-  locale: localeReducer,
+export const store = configureStore({
+  reducer: {
+    balance: persistedBalanceReducer,
+    locale: persistedLocaleReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
-export const store = createStore(rootReducer, composeWithDevTools());
+export const persistor = persistStore(store);

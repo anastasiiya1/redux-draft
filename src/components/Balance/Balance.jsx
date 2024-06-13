@@ -6,7 +6,7 @@ import { useState } from 'react';
 function Balance() {
   const dispatch = useDispatch();
   const balance = useSelector(state => state.balance.value);
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(0);
 
   return (
     <div className={styles.container}>
